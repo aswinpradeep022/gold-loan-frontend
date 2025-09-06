@@ -12,6 +12,7 @@ import { CiSearch } from "react-icons/ci";
 import { useState } from "react";
 import SidePanel from "./SidePanel";
 import Pagination from "../components/Pagination";
+import { useNavigate } from "react-router-dom";
 
 const invoices = [
   {
@@ -107,6 +108,7 @@ const invoices = [
 ];
 
 export default function CustomersList() {
+  const navigate = useNavigate();
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [page, setPage] = useState(1);
@@ -139,7 +141,10 @@ export default function CustomersList() {
                 className="pl-10"
               />
             </div>
-            <Button className="mt-4 mr-5 w-34 bg-green-600 text-white">
+            <Button
+              className="mt-4 mr-5 w-34 bg-green-600 text-white hover:bg-emerald-700"
+              onClick={() => navigate("/new-customer")}
+            >
               Add Customer
             </Button>
           </div>
