@@ -9,6 +9,9 @@ import {
   TableRow,
 } from "../components/ui/table";
 import { CiSearch } from "react-icons/ci";
+import { useState } from "react";
+import SidePanel from "./SidePanel";
+import Pagination from "../components/Pagination";
 
 const invoices = [
   {
@@ -104,21 +107,41 @@ const invoices = [
 ];
 
 export default function CustomersList() {
+  const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 10;
+
+  const handleRowClick = (customer) => {
+    setIsSidePanelOpen(true);
+    setSelectedCustomer(customer);
+  };
+
+  const closeSidePanel = () => {
+    setIsSidePanelOpen(false);
+    setSelectedCustomer(null);
+  };
+
+  const totalPages = Math.ceil(invoices.length / rowsPerPage);
+  const startIndex = (page - 1) * rowsPerPage;
+  const paginatedData = invoices.slice(startIndex, startIndex + rowsPerPage);
+
   return (
     <div className="flex justify-center pt-16">
-      <div className="w-full max-w-7xl bg-white rounded-xl p-6 shadow-sm">
-        <div className="max-h-[700px] overflow-y-auto custom-scroll">
+      <div className="w-full max-w-7xl bg-white rounded-xl p-4 shadow-sm">
+        <div>
           <div className="flex justify-between items-center">
-          <div className="relative flex items-center max-w-sm shadow-sm ml-2 mt-4 mb-6">
-            <CiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-
-            <Input
-              type="text"
-              placeholder="Search by name, KYC ID, phone..."
-              className="pl-10"
-            />
-          </div>
-          <Button className="mt-4 mr-5 w-34 bg-green-600 text-white">Add Customer</Button>
+            <div className="relative flex items-center max-w-sm shadow-sm ml-2 mt-4 mb-6">
+              <CiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Input
+                type="text"
+                placeholder="Search by name, KYC ID, phone..."
+                className="pl-10"
+              />
+            </div>
+            <Button className="mt-4 mr-5 w-34 bg-green-600 text-white">
+              Add Customer
+            </Button>
           </div>
           <Table className="table-fixed w-full">
             <TableHeader className="sticky top-0 z-10 bg-white shadow-sm">
@@ -132,9 +155,15 @@ export default function CustomersList() {
             </TableHeader>
 
             <TableBody>
-              {invoices.map((invoice, index) => (
-                <TableRow key={invoice.kycId}>
-                  <TableCell className="font-medium">{index + 1}</TableCell>
+              {paginatedData.map((invoice, index) => (
+                <TableRow
+                  key={invoice.kycId}
+                  className="cursor-pointer hover:bg-gray-50"
+                  onClick={() => handleRowClick(invoice)}
+                >
+                  <TableCell className="font-medium">
+                    {startIndex + index + 1}
+                  </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 font-medium rounded-full bg-green-100 flex items-center justify-center text-xs text-green-700">
@@ -167,8 +196,25 @@ export default function CustomersList() {
               ))}
             </TableBody>
           </Table>
+          {/* <!-- Pagination --> */}
+          <Pagination
+            startIndex={startIndex}
+            rowsPerPage={rowsPerPage}
+            invoices={invoices}
+            page={page}
+            totalPages={totalPages}
+            setPage={setPage}
+          />
         </div>
       </div>
+
+      {/* Side Panel */}
+      {isSidePanelOpen && (
+        <SidePanel
+          selectedCustomer={selectedCustomer}
+          closeSidePanel={closeSidePanel}
+        />
+      )}
     </div>
   );
 }
