@@ -1,17 +1,20 @@
 import { BrowserRouter as Router } from "react-router-dom";
 import AppRoutes from "./routes/AppRoutes";
-import Sidebar from "./components/Sidebar";
+import SidebarComponent from "./components/Sidebar";
 import ToastProvider from "./components/ToastProvider";
+import { SidebarProvider } from "./components/ui/sidebar";
 
 function App() {
   return (
     <Router>
       <div className="flex">
-        <Sidebar />
-        <main className="flex-1">
-          <AppRoutes />
-          <ToastProvider />
-        </main>
+        <SidebarProvider>
+          <SidebarComponent />
+          <main className="flex-1">
+            <AppRoutes />
+            <ToastProvider />
+          </main>
+        </SidebarProvider>
       </div>
     </Router>
   );

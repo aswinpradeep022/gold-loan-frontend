@@ -1,105 +1,82 @@
-import React, { useState } from 'react';
-import { LuUsersRound } from "react-icons/lu";
-import { GrMoney } from "react-icons/gr";
+import { useState } from "react";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "./ui/sidebar";
+import { LayoutDashboard, Users } from "lucide-react";
+import { AiFillGolden } from "react-icons/ai";
 
-const Sidebar = () => {
+const SidebarComponent = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const navigationItems = [
     {
-      name: 'Dashboard',
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z" />
-        </svg>
-      ),
-      href: '/dashboard'
+      title: "Dashboard",
+      icon: LayoutDashboard,
+      url: "/dashboard",
     },
     {
-      name: 'Customers',
-      icon:<LuUsersRound />,
-      href: '/customers'
-    }
+      title: "Customers",
+      icon: Users,
+      url: "/customers",
+      isActive: true,
+    },
   ];
-
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
   };
 
   return (
-    <div className={`
-      relative 
-      ${isCollapsed ? 'w-16 p-0' : 'w-64 pl-4'}
-      bg-sidebar border-r border-sidebar-border
-      transition-all duration-300 ease-in-out
-      flex flex-col h-screen 
-    `}>
+    <Sidebar className="border-r border-gray-200 bg-gradient-to-b from-slate-50 to-blue-50">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
-        {!isCollapsed && (
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8  rounded-lg flex items-center justify-center">
-            <GrMoney />
-            </div>
-            <span className="text-sidebar-foreground font-semibold text-lg">Gold Loan</span>
+      <SidebarHeader className="p-6 bg-gradient-to-r from-emerald-50 to-blue-50 border-b border-gray-200">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
+            <AiFillGolden className="h-6 w-6 text-white" />
           </div>
-        )}
-        
-        <button
-          onClick={toggleSidebar}
-          className="p-1.5 rounded-md hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-accent-foreground transition-colors"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-          </svg>
-        </button>
-      </div>
-
+          <div>
+            <h1 className="text-xl font-bold text-gray-900">Gold Loan</h1>
+            <p className="text-sm text-gray-600">Management System</p>
+          </div>
+        </div>
+      </SidebarHeader>
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-2">
-        {navigationItems.map((item, index) => (
-          <a
-            key={index}
-            href={item.href}
-            className={`
-              flex items-center space-x-3 px-3 py-2 rounded-lg
-              text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground
-              transition-colors duration-200 group
-              ${isCollapsed ? 'justify-center' : ''}
-            `}
-            title={isCollapsed ? item.name : ''}
-          >
-            <span className="flex-shrink-0">{item.icon}</span>
-            {!isCollapsed && (
-              <span className="font-medium">{item.name}</span>
-            )}
-          </a>
-        ))}
-      </nav>
-
-      {/* Footer */}
-      {/* <div className="p-4 border-t border-sidebar-border">
-        {!isCollapsed ? (
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-sidebar-accent rounded-full flex items-center justify-center">
-              <span className="text-sidebar-accent-foreground text-sm font-medium">U</span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sidebar-foreground text-sm font-medium truncate">User Name</p>
-              <p className="text-sidebar-foreground/70 text-xs truncate">user@example.com</p>
-            </div>
-          </div>
-        ) : (
-          <div className="flex justify-center">
-            <div className="w-8 h-8 bg-sidebar-accent rounded-full flex items-center justify-center">
-              <span className="text-sidebar-accent-foreground text-sm font-medium">U</span>
-            </div>
-          </div>
-        )}
-      </div> */}
-    </div>
+      <SidebarContent className="p-4">
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+            Main Navigation
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu className="space-y-2">
+              {navigationItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={item.url === window.location.pathname}
+                    className="w-full justify-start px-6 py-6 rounded-xl transition-all duration-200 hover:bg-white hover:shadow-md group data-[active=true]:bg-white data-[active=true]:shadow-md data-[active=true]:border data-[active=true]:border-emerald-100"
+                  >
+                    <a href={item.url} className="flex items-center gap-4">
+                      <item.icon className="h-5 w-5 text-gray-600 group-hover:text-emerald-600 group-data-[active=true]:text-emerald-600" />
+                      <span className="font-medium text-gray-700 group-hover:text-gray-900 group-data-[active=true]:text-gray-900">
+                        {item.title}
+                      </span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
   );
 };
 
-export default Sidebar;
+export default SidebarComponent;
