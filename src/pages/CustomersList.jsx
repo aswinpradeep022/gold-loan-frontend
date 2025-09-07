@@ -13,6 +13,7 @@ import { useState } from "react";
 import SidePanel from "./SidePanel";
 import Pagination from "../components/Pagination";
 import { useNavigate } from "react-router-dom";
+import { PlusIcon } from "lucide-react";
 
 const invoices = [
   {
@@ -113,6 +114,13 @@ export default function CustomersList() {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [page, setPage] = useState(1);
   const rowsPerPage = 10;
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredData = invoices.filter(
+    (customer) =>
+      customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      customer.kycId.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const handleRowClick = (customer) => {
     setIsSidePanelOpen(true);
@@ -124,27 +132,32 @@ export default function CustomersList() {
     setSelectedCustomer(null);
   };
 
-  const totalPages = Math.ceil(invoices.length / rowsPerPage);
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
   const startIndex = (page - 1) * rowsPerPage;
-  const paginatedData = invoices.slice(startIndex, startIndex + rowsPerPage);
+  const paginatedData = filteredData.slice(
+    startIndex,
+    startIndex + rowsPerPage
+  );
 
   return (
     <div className="flex justify-center pt-16">
       <div className="w-full max-w-7xl bg-white rounded-xl p-4 shadow-sm">
         <div>
           <div className="flex justify-between items-center">
-            <div className="relative flex items-center max-w-sm shadow-sm ml-2 mt-4 mb-6">
+            <div className="relative flex items-center max-w-sm shadow-sm ml-2 mt-4 mb-6 w-full">
               <CiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <Input
                 type="text"
-                placeholder="Search by name, KYC ID, phone..."
+                placeholder="Search by name, KYC ID"
                 className="pl-10"
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             <Button
               className="mt-4 mr-5 w-34 bg-green-600 text-white hover:bg-emerald-700"
               onClick={() => navigate("/new-customer")}
             >
+              <PlusIcon className="w-4 h-4 mr-1" />
               Add Customer
             </Button>
           </div>
